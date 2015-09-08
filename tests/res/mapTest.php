@@ -19,14 +19,9 @@ class mapTest extends \PHPUnit_Framework_TestCase
     protected $dispatcher;
 
     protected function setUp  () {
-        $req = new Request();
-        vsc::getEnv()->setHttpRequest($req);
+        vsc::getEnv()->setHttpRequest(new Request());
         $this->dispatcher = new RwDispatcher();
     }
-
-//    protected function tearDown  () {
-//        vsc::setInstance(new vsc());
-//    }
 
     public function uriProvider () {
         return [
@@ -42,8 +37,6 @@ class mapTest extends \PHPUnit_Framework_TestCase
     }
     /**
      * @param string $uri
-     * @throws \Exception
-     * @throws \vsc\application\sitemaps\ExceptionSitemap
      * @dataProvider uriProvider
      */
     public function testGetProcessorMap ($uri) {
@@ -58,8 +51,6 @@ class mapTest extends \PHPUnit_Framework_TestCase
     }
     /**
      * @param string $uri
-     * @throws \Exception
-     * @throws \vsc\application\sitemaps\ExceptionSitemap
      * @dataProvider uriProvider
      */
     public function testGetControllerMap ($uri) {
