@@ -1,0 +1,29 @@
+{
+  "name": "lbm/vtlcal",
+  "description": "TL calendar scraper",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Marius Orcsik",
+      "email": "marius@habarnam.ro"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "league/monga": "dev-master",
+    "vsc/vsc": "dev-master"
+  },
+  "repositories" : [
+    {
+      "type": "vcs",
+      "url": "git@github.com:lpbm/vsc.git"
+    }
+  ],
+  "autoload": {
+    "psr-4" : { "tlcal\\" : ["src/lib", "/src/res"]}
+  },
+  "autoload-dev": {
+    "psr-4" : { "fixtures\\" : "tests/fixtures"}
+  }
+}
