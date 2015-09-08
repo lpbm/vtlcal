@@ -5,7 +5,8 @@ namespace tests;
 use fixtures\presentation\requests\Request;
 use tlcal\application\controllers\ICalController;
 use tlcal\application\processors\Calendar;
-use vsc\application\dispatchers\DispatcherA;
+use tlcal\application\processors\CalendarDay;
+use tlcal\application\processors\CalendarMonth;
 use vsc\application\dispatchers\RwDispatcher;
 use vsc\application\sitemaps\ClassMap;
 use vsc\application\sitemaps\MappingA;
@@ -14,7 +15,7 @@ use vsc\infrastructure\vsc;
 class mapTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var DispatcherA
+     * @var RwDispatcher
      */
     protected $dispatcher;
 
@@ -35,6 +36,51 @@ class mapTest extends \PHPUnit_Framework_TestCase
             'random path with txt' => [uniqid('/') . '.txt'],
         ];
     }
+
+    public function uriProviderForYYYYMMDDUrl () {
+        return [
+            '30thEleventh' => ['/2015/11/30/'],
+            '30thNovember' => ['/2015/november/30/'],
+        ];
+    }
+
+    public function uriProviderForYYYYMMUrl () {
+        return [
+            'theTwelfth' => ['/2015/12/'],
+            'December' => ['/2015/december/'],
+        ];
+    }
+
+    /**
+     * @param string $uri
+     * @dataProvider uriProviderForYYYYMMUrl
+     */
+    public function testGetMonthProcessorMap ($uri) {
+        vsc::getEnv()->getHttpRequest()->setUri($uri);
+
+        $this->assertTrue($this->dispatcher->loadSiteMap('src/res/map.php'));
+        $map = $this->dispatcher->getCurrentProcessorMap();
+
+        $this->assertInstanceOf(MappingA::class, $map);
+        $this->assertInstanceOf(ClassMap::class, $map);
+        $this->assertEquals(CalendarMonth::class, $map->getPath());
+    }
+
+    /**
+     * @param string $uri
+     * @dataProvider uriProviderForYYYYMMDDUrl
+     */
+    public function testGetDayProcessorMap ($uri) {
+        vsc::getEnv()->getHttpRequest()->setUri($uri);
+
+        $this->assertTrue($this->dispatcher->loadSiteMap('src/res/map.php'));
+        $map = $this->dispatcher->getCurrentProcessorMap();
+
+        $this->assertInstanceOf(MappingA::class, $map);
+        $this->assertInstanceOf(ClassMap::class, $map);
+        $this->assertEquals(CalendarDay::class, $map->getPath());
+    }
+
     /**
      * @param string $uri
      * @dataProvider uriProvider
@@ -49,6 +95,7 @@ class mapTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(ClassMap::class, $map);
         $this->assertEquals(Calendar::class, $map->getPath());
     }
+
     /**
      * @param string $uri
      * @dataProvider uriProvider
