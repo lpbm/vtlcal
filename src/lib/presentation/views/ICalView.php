@@ -7,6 +7,10 @@ use vsc\presentation\views\ExceptionView;
 
 class ICalView extends CacheableViewA
 {
+    /**
+     * @var string
+     */
+    protected $sContentType = 'text/calendar';
 
     public function getLastModified()
     {
