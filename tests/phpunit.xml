@@ -1,0 +1,28 @@
+<phpunit
+        bootstrap="bootstrap.php"
+        colors="true"
+        stopOnIncomplete="false"
+        stopOnError="false"
+        stopOnFailure="false"
+        stopOnRisky="false"
+        stopOnSkipped="false">
+    <testsuites>
+        <testsuite name="all">
+            <directory suffix="Test.php">./lib</directory>
+            <directory suffix="Test.php">./res</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src/lib</directory>
+            <directory suffix=".php">../src/res</directory>
+            <exclude>
+                <directory suffix=".php">../src/res/templates</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <php>
+        <server name="SCRIPT_NAME" value="test.php"/>
+        <env name="SCRIPT_NAME" value="test.php"/>
+    </php>
+</phpunit>

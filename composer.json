@@ -24,6 +24,9 @@
     "psr-4" : { "tlcal\\" : ["src/lib", "/src/res"]}
   },
   "autoload-dev": {
-    "psr-4" : { "fixtures\\" : "tests/fixtures"}
+    "psr-4" : {
+      "tests\\" : ["tests/lib", "tests/res"],
+      "fixtures\\" : ["tests/fixtures"]
+    }
   }
 }

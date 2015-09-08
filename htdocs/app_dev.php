@@ -7,10 +7,11 @@ $sContent 	= '';
 error_reporting (E_ALL); ini_set('display_errors', 1);
 $_SERVER['REQUEST_URI'] = '/';
 
-if ( file_exists('../vendor/autoload.php') ) {
-    $loader = include_once '../vendor/autoload.php';
-    if ( file_exists('../vendor' . DIRECTORY_SEPARATOR . 'vsc' . DIRECTORY_SEPARATOR . 'vsc' . DIRECTORY_SEPARATOR . 'vsc.inc.php') ) {
-        include_once '../vendor' . DIRECTORY_SEPARATOR . 'vsc' . DIRECTORY_SEPARATOR . 'vsc' . DIRECTORY_SEPARATOR . 'vsc.inc.php';
+chdir(dirname(__FILE__) . '/../');
+if ( file_exists('vendor/autoload.php') ) {
+    $loader = include_once 'vendor/autoload.php';
+    if ( file_exists('vendor' . DIRECTORY_SEPARATOR . 'vsc' . DIRECTORY_SEPARATOR . 'vsc' . DIRECTORY_SEPARATOR . 'vsc.inc.php') ) {
+        include_once 'vendor' . DIRECTORY_SEPARATOR . 'vsc' . DIRECTORY_SEPARATOR . 'vsc' . DIRECTORY_SEPARATOR . 'vsc.inc.php';
     } else {
         throw new RuntimeException('Unable to load vsc library. Run `php composer.phar install`.');
     }
@@ -30,7 +31,7 @@ try {
     $oRequest = vsc::getEnv()->getHttpRequest();
 
     // load the sitemap
-    $oDispatcher->loadSiteMap ('../src/res/map.php');
+    $oDispatcher->loadSiteMap ('src/res/map.php');
 
     /* @var \vsc\application\processors\ProcessorA $oProcessor  */
     // get the controller
