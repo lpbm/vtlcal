@@ -1,5 +1,5 @@
 <?php
-namespace tlcal\domain\models\ICal;
+namespace tlcal\domain\models\ical;
 
 use vsc\domain\models\ModelA;
 

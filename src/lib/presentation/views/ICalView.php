@@ -11,6 +11,7 @@ class ICalView extends CacheableViewA
      * @var string
      */
     protected $sContentType = 'text/calendar';
+//    protected $sContentType = 'text/plain1';
 
     public function getLastModified()
     {
@@ -27,6 +28,6 @@ class ICalView extends CacheableViewA
      * @throws ExceptionView
      */
     public function getOutput() {
-
+        return implode("\r\n", $this->getModel()->build());
     }
 }

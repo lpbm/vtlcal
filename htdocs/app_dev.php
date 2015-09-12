@@ -4,6 +4,8 @@ use vsc\infrastructure\vsc;
 $iStart		= microtime(true);
 $sContent 	= '';
 
+date_default_timezone_set('UTC');
+
 error_reporting (E_ALL); ini_set('display_errors', 1);
 $_SERVER['REQUEST_URI'] = '/';
 

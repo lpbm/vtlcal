@@ -12,6 +12,7 @@
   "require": {
     "php": ">=5.5.0",
     "league/monga": "dev-master",
+    "eluceo/ical": "dev-master",
     "vsc/vsc": "dev-master"
   },
   "repositories" : [
