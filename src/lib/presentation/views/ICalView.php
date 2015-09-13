@@ -10,8 +10,7 @@ class ICalView extends CacheableViewA
     /**
      * @var string
      */
-    protected $sContentType = 'text/calendar';
-//    protected $sContentType = 'text/plain1';
+    protected $sContentType = 'text/calendar; charset=utf-8';
 
     public function getLastModified()
     {

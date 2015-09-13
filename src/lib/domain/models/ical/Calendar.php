@@ -3,6 +3,7 @@ namespace tlcal\domain\models\ical;
 
 use Eluceo\iCal\Component\Calendar as iCalCalendar;
 use Eluceo\iCal\Component\Event;
+use Eluceo\iCal\Component\Timezone;
 use vsc\domain\models\ModelA;
 
 class Calendar extends ModelA
@@ -14,6 +15,8 @@ class Calendar extends ModelA
 
     public function __construct() {
         $this->ical = new iCalCalendar(uniqid('TL-CAL/'));
+        $this->ical->setTimezone(new Timezone('UTC'));
+        $this->ical->setPublishedTTL('P1D');
     }
 
     /**
