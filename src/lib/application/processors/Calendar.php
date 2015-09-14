@@ -69,7 +69,7 @@ class Calendar extends ProcessorA
             $ev->setDtStart($start);
             $ev->setDtEnd($end);
 
-            $ev->setSummary($eventArray['category']. ':' . $eventArray['stage']);
+            $ev->setSummary('['. strtoupper($eventArray['type']) . '] ' .  $eventArray['category']. ': ' . $eventArray['stage']);
             $ev->setDescription($eventArray['content']);
 
             $model->addEvent($ev);
