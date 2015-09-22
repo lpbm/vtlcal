@@ -24,13 +24,19 @@ class Calendar extends ProcessorA
         if ($var == 'dota') {
             return 'dot';
         }
-        if ($var == 'league') {
+        if ($var == 'league' || $var == 'lol') {
             return 'lol';
         }
         if ($var == 'hearthstone') {
             return 'hrt';
         }
-        return 'sc2';
+        if ($var == 'starcraft') {
+            return 'sc2';
+        }
+        if ($var == 'broodwar') {
+            return 'sc2';
+        }
+        return 'all';
     }
 
     /**
@@ -51,8 +57,11 @@ class Calendar extends ProcessorA
             function ($query) use ($calendar) {
                 $lastWeek = (new \DateTime())->sub(new \DateInterval('P1W'));
                 /** @var Monga\Query\Find $query */
-                $query->where('type', $calendar)
-                    ->whereGte('start_time', new \MongoDate($lastWeek->getTimestamp()));
+                $query->whereGte('start_time', new \MongoDate($lastWeek->getTimestamp()));
+
+                if ($calendar != 'all') {
+                    $query->where('type', $calendar);
+                }
             }
         );
 

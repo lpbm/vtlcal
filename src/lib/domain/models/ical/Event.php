@@ -2,8 +2,6 @@
 namespace tlcal\domain\models\ical;
 
 use Eluceo\iCal\Component\Event as iCalEvent;
-use tlcal\domain\LiquidAssets;
-use vsc\infrastructure\StringUtils;
 
 class Event extends iCalEvent
 {
