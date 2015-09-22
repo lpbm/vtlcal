@@ -51,12 +51,12 @@ class Calendar extends ProcessorA
             function ($query) use ($calendar) {
                 $lastWeek = (new \DateTime())->sub(new \DateInterval('P1W'));
                 /** @var Monga\Query\Find $query */
-                $query/*->whereGte('start_time', $lastWeek)*/
-                   ->where('type', $calendar);
+                $query->where('type', $calendar)
+                    ->whereGte('start_time', new \MongoDate($lastWeek->getTimestamp()));
             }
         );
 
-        $model = new CalendarModel();
+        $model = new CalendarModel($calendar);
         foreach($cursor->toArray() as $eventArray) {
             $ev = new Event();
             if ($eventArray['start_time']) {
@@ -107,6 +107,8 @@ class Calendar extends ProcessorA
             $ev->setSummary('['. strtoupper($eventArray['type']) . '] ' . $eventArray['category']. ': ' . $eventArray['stage']);
             $ev->setAltDescription($html, 'application/text');
             $ev->setDescription($eventArray['content']);
+
+            $ev->setCategories([LiquidAssets::getLabel($eventArray['type'])]);
 
             $model->addEvent($ev);
         }
