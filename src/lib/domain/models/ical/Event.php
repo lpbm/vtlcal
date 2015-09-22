@@ -10,17 +10,6 @@ class Event extends iCalEvent
     protected $alternateDescriptionContentType;
     protected $alternateDescription;
 
-    /**
-     * @param $description
-     *
-     * @return $this
-     */
-    public function setDescription($description)
-    {
-        parent::setDescription(StringUtils::stripTags($description));
-        $this->setAltDescription($description, 'application/html');
-    }
-
     public function setAltDescription ($content, $contentType = 'application/html')
     {
         $this->alternateDescription = $content;
@@ -31,7 +20,9 @@ class Event extends iCalEvent
     {
         $propBag = parent::buildPropertyBag();
 
-        $propBag->set('X-ALT-DESC;FMTTYPE=' .$this->alternateDescriptionContentType, $this->alternateDescription);
+        if (!empty($this->alternateDescription)) {
+            $propBag->set('X-ALT-DESC;FMTTYPE=' . $this->alternateDescriptionContentType, $this->alternateDescription);
+        }
 
         return $propBag;
     }
