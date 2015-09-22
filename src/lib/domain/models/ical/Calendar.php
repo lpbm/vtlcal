@@ -18,7 +18,7 @@ class Calendar extends ModelA
         $this->ical = new iCalCalendar('TL-CAL/v0.0.1');
         $this->ical->setTimezone(new Timezone('UTC'));
         $this->ical->setPublishedTTL('P1H');
-        $this->ical->setName('TL - ' . LiquidAssets::getLabel($type));
+        $this->ical->setName(LiquidAssets::getLabel($type));
         $this->ical->setDescription('The Team Liquid Calendar translated to proper ICal format');
     }
 

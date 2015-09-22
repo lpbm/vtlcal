@@ -21,8 +21,12 @@ class Calendar extends ProcessorA
     }
 
     protected function getTypeFromUrl($var) {
+        $var = strtolower($var);
         if ($var == 'dota') {
             return 'dot';
+        }
+        if ($var == 'csgo' || $var == 'counter' || $var == 'counterstrike') {
+            return 'csg';
         }
         if ($var == 'league' || $var == 'lol') {
             return 'lol';
@@ -34,7 +38,10 @@ class Calendar extends ProcessorA
             return 'sc2';
         }
         if ($var == 'broodwar') {
-            return 'sc2';
+            return 'brw';
+        }
+        if ($var == 'smash') {
+            return 'sms';
         }
         return 'all';
     }
@@ -80,22 +87,10 @@ class Calendar extends ProcessorA
 
             $doc = new \DOMDocument('1.0', 'UTF-8');
 
-            $root = $doc->createElement('html');
-            $doc->appendChild($root);
-
-            $head = $doc->createElement('head');
-            $root->appendChild($head);
-
-            $title = $doc->createElement('title');
-            $head->appendChild($title);
-
-            $titleText = $doc->createTextNode($eventArray['category']. ': ' . $eventArray['stage']);
-            $title->appendChild($titleText);
-
             $body = $doc->createElement('body');
             $doc->appendChild($body);
 
-            $section = $doc->createElement('section');
+            $section = $doc->createElement('div');
             $body->appendChild($section);
 
             $span = $doc->createElement('span');
@@ -105,16 +100,19 @@ class Calendar extends ProcessorA
             $icon->setAttribute('src', LiquidAssets::getIconString($eventArray['type']));
             $span->appendChild($icon);
 
-            $localText = clone $titleText;
+            $br = $doc->createElement('br');
+            $span->appendChild($br);
+
+            $localText = $doc->createTextNode($eventArray['category']. ': ' . $eventArray['stage']);
             $span->appendChild($localText);
 
             $text = $doc->createTextNode($eventArray['content']);
             $section->appendChild($text);
 
-            $html = $doc->saveHTML();
+            $html = $doc->saveHTML($section);
 
             $ev->setSummary('['. strtoupper($eventArray['type']) . '] ' . $eventArray['category']. ': ' . $eventArray['stage']);
-            $ev->setAltDescription($html, 'application/text');
+            $ev->setAltDescription($html, 'text/html');
             $ev->setDescription($eventArray['content']);
 
             $ev->setCategories([LiquidAssets::getLabel($eventArray['type'])]);
