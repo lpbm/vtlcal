@@ -53,6 +53,7 @@ START;
             default:
                 $content = 'Unknown';
         }
+        return $content;
     }
 
     public static function getIconString ($type = 'unk')
