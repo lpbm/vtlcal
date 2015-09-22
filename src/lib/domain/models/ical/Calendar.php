@@ -16,7 +16,9 @@ class Calendar extends ModelA
     public function __construct() {
         $this->ical = new iCalCalendar('TL-CAL/v0.0.1');
         $this->ical->setTimezone(new Timezone('UTC'));
-        $this->ical->setPublishedTTL('P1D');
+        $this->ical->setPublishedTTL('P1H');
+        $this->ical->setName('Team Liquid Calendar');
+        $this->ical->setDescription('The Team Liquid Calendar translated to proper ICal format');
     }
 
     /**

@@ -1,11 +1,11 @@
 <?php
 namespace tlcal\application\processors;
 
-use Eluceo\iCal\Component\Event;
 use League\Monga;
+use tlcal\domain\LiquidAssets;
 use tlcal\domain\models\ical\Calendar as CalendarModel;
+use tlcal\domain\models\ical\Event;
 use vsc\application\processors\ProcessorA;
-use vsc\infrastructure\vsc;
 use vsc\presentation\requests\HttpRequestA;
 use vsc\domain\models\ModelA;
 
@@ -69,7 +69,43 @@ class Calendar extends ProcessorA
             $ev->setDtStart($start);
             $ev->setDtEnd($end);
 
-            $ev->setSummary('['. strtoupper($eventArray['type']) . '] ' .  $eventArray['category']. ': ' . $eventArray['stage']);
+            $doc = new \DOMDocument('1.0', 'UTF-8');
+
+            $root = $doc->createElement('html');
+            $doc->appendChild($root);
+
+            $head = $doc->createElement('head');
+            $root->appendChild($head);
+
+            $title = $doc->createElement('title');
+            $head->appendChild($title);
+
+            $titleText = $doc->createTextNode($eventArray['category']. ': ' . $eventArray['stage']);
+            $title->appendChild($titleText);
+
+            $body = $doc->createElement('body');
+            $doc->appendChild($body);
+
+            $section = $doc->createElement('section');
+            $body->appendChild($section);
+
+            $span = $doc->createElement('span');
+            $section->appendChild($span);
+
+            $icon = $doc->createElement('img');
+            $icon->setAttribute('src', LiquidAssets::getIconString($eventArray['type']));
+            $span->appendChild($icon);
+
+            $localText = clone $titleText;
+            $span->appendChild($localText);
+
+            $text = $doc->createTextNode($eventArray['content']);
+            $section->appendChild($text);
+
+            $html = $doc->saveHTML();
+
+            $ev->setSummary('['. strtoupper($eventArray['type']) . '] ' . $eventArray['category']. ': ' . $eventArray['stage']);
+            $ev->setAltDescription($html, 'application/text');
             $ev->setDescription($eventArray['content']);
 
             $model->addEvent($ev);
