@@ -82,6 +82,13 @@ class Calendar extends ProcessorA
                 $end = $eventArray['end_time']->toDateTime();
             }
 
+            $content = $eventArray['content'];
+            if (isset($eventArray['links'])) {
+                foreach ($eventArray['links'] as $title => $url) {
+                    $content .= "\n " . $title . ': ' . $url;
+                }
+            }
+
             $ev->setDtStart($start);
             $ev->setDtEnd($end);
 
@@ -106,14 +113,24 @@ class Calendar extends ProcessorA
             $localText = $doc->createTextNode($eventArray['category']. ': ' . $eventArray['stage']);
             $span->appendChild($localText);
 
-            $text = $doc->createTextNode($eventArray['content']);
-            $section->appendChild($text);
-
+            $lines = explode("\n", $content);
+            for ($i = count($lines); $i > 0; $i--) {
+                $line = $lines[$i];
+                if (!empty($line)) {
+                    $text = $doc->createTextNode($line);
+                    $section->appendChild($text);
+                    if ($i > 1) {
+                        $br = $doc->createElement('br');
+                        $section->appendChild($br);
+                    }
+                }
+            }
             $html = $doc->saveHTML($section);
 
             $ev->setSummary('['. strtoupper($eventArray['type']) . '] ' . $eventArray['category']. ': ' . $eventArray['stage']);
             $ev->setAltDescription($html, 'text/html');
-            $ev->setDescription($eventArray['content']);
+
+            $ev->setDescription($content);
 
             $ev->setCategories([LiquidAssets::getLabel($eventArray['type'])]);
 
