@@ -62,7 +62,7 @@ class Calendar extends ProcessorA
         /** @var Monga\Cursor $cursor */
         $cursor = $collection->find(
             function ($query) use ($calendar) {
-                $lastWeek = (new \DateTime())->sub(new \DateInterval('P1W'));
+                $lastWeek = (new \DateTime())->sub(new \DateInterval('P1M'));
                 /** @var Monga\Query\Find $query */
                 $query->whereGte('start_time', new \MongoDate($lastWeek->getTimestamp()));
 
@@ -85,53 +85,56 @@ class Calendar extends ProcessorA
             $content = $eventArray['content'];
             if (isset($eventArray['links'])) {
                 foreach ($eventArray['links'] as $title => $url) {
-                    $content .= "\n " . $title . ': ' . $url;
+                    $content .= "\n" . $title . ': ' . $url;
                 }
             }
 
             $ev->setDtStart($start);
             $ev->setDtEnd($end);
 
-            $doc = new \DOMDocument('1.0', 'UTF-8');
+            if (false) {
+                $doc = new \DOMDocument('1.0', 'UTF-8');
 
-            $body = $doc->createElement('body');
-            $doc->appendChild($body);
+                $body = $doc->createElement('body');
+                $doc->appendChild($body);
 
-            $section = $doc->createElement('div');
-            $body->appendChild($section);
+                $section = $doc->createElement('div');
+                $body->appendChild($section);
 
-            $span = $doc->createElement('span');
-            $section->appendChild($span);
+                $span = $doc->createElement('span');
+                $section->appendChild($span);
 
-            $icon = $doc->createElement('img');
-            $icon->setAttribute('src', LiquidAssets::getIconString($eventArray['type']));
-            $span->appendChild($icon);
+                $icon = $doc->createElement('img');
+                $icon->setAttribute('src', LiquidAssets::getIconString($eventArray['type']));
+                $span->appendChild($icon);
 
-            $br = $doc->createElement('br');
-            $span->appendChild($br);
+                $br = $doc->createElement('br');
+                $span->appendChild($br);
 
-            $localText = $doc->createTextNode($eventArray['category']. ': ' . $eventArray['stage']);
-            $span->appendChild($localText);
+                $localText = $doc->createTextNode($eventArray['category'] . ': ' . $eventArray['stage']);
+                $span->appendChild($localText);
 
-            $lines = explode("\n", $content);
-            for ($i = count($lines); $i > 0; $i--) {
-                $line = $lines[$i];
-                if (!empty($line)) {
-                    $text = $doc->createTextNode($line);
-                    $section->appendChild($text);
-                    if ($i > 1) {
-                        $br = $doc->createElement('br');
-                        $section->appendChild($br);
+                $lines = explode("\n", $content);
+                for ($i = count($lines); $i > 0; $i--) {
+                    $line = $lines[$i];
+                    if (!empty($line)) {
+                        $text = $doc->createTextNode($line);
+                        $section->appendChild($text);
+                        if ($i > 1) {
+                            $br = $doc->createElement('br');
+                            $section->appendChild($br);
+                        }
                     }
                 }
+                $html = $doc->saveHTML($section);
+                $ev->setAltDescription($html, 'text/html');
             }
-            $html = $doc->saveHTML($section);
 
             $ev->setSummary('['. strtoupper($eventArray['type']) . '] ' . $eventArray['category']. ': ' . $eventArray['stage']);
-            $ev->setAltDescription($html, 'text/html');
-
             $ev->setDescription($content);
-
+            if (isset($eventArray['canceled'])) {
+                $ev->setCancelled((bool)$eventArray['canceled']);
+            }
             $ev->setCategories([LiquidAssets::getLabel($eventArray['type'])]);
 
             $model->addEvent($ev);
