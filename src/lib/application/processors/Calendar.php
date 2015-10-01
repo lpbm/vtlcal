@@ -130,7 +130,11 @@ class Calendar extends ProcessorA
                 $ev->setAltDescription($html, 'text/html');
             }
 
-            $ev->setSummary('['. strtoupper($eventArray['type']) . '] ' . $eventArray['category']. ': ' . $eventArray['stage']);
+            if ($calendar == 'all') {
+                $ev->setSummary('[' . strtoupper($eventArray['type']) . '] ' . $eventArray['category'] . ': ' . $eventArray['stage']);
+            } else {
+                $ev->setSummary($eventArray['category'] . ': ' . $eventArray['stage']);
+            }
             $ev->setDescription($content);
             if (isset($eventArray['canceled'])) {
                 $ev->setCancelled((bool)$eventArray['canceled']);
