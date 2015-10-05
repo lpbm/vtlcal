@@ -11,7 +11,12 @@ use vsc\domain\models\ModelA;
 
 class Calendar extends ProcessorA
 {
-    protected $aLocalVars = ['calendar' => 'sc2'];
+    protected $aLocalVars = [
+        'calendar' => 'sc2',
+        'year' => null,
+        'month' => null,
+        'day' => null
+    ];
     /**
      * @return void
      */
@@ -47,6 +52,48 @@ class Calendar extends ProcessorA
     }
 
     /**
+     * @return array
+     */
+    private function getDates() {
+        $year = $this->getVar('year');
+        $month = $this->getVar('month');
+        $day = $this->getVar('day');
+
+        if (!($year || $month || $day)) {
+            return [
+                \DateTimeImmutable::createFromFormat(
+                    'Y-m-d',
+                    (new \DateTimeImmutable())->format('Y-m-01')
+                ),
+                null
+            ];
+        }
+        if (is_null($day)) {
+            $interval = 'P1M';
+            $dateString = '%s-%s-01 00:00:00';
+        } else {
+            $interval = 'P1D';
+            $dateString = '%s-%s-%s 00:00:00';
+        }
+
+        if (!is_numeric($month)) {
+            if (strlen($month) == 3) {
+                $format = 'Y-M-d G:i:s';
+            } else {
+                $format = 'Y-F-d G:i:s';
+            }
+            $date = sprintf($dateString, $year, ucfirst($month), $day);
+
+        } else {
+            $format = 'Y-m-d G:i:s';
+            $date = sprintf($dateString, $year, $month, $day);
+        }
+
+        $start = \DateTimeImmutable::createFromFormat($format, $date);
+        return [$start, $start->add(new \DateInterval($interval))];
+    }
+
+    /**
      * Returns a data model, which can be used in the view
      * @param HttpRequestA $oHttpRequest
      * @returns ModelA
@@ -59,18 +106,25 @@ class Calendar extends ProcessorA
         $calendar = $this->getTypeFromUrl($this->getVar('calendar'));
         /** @var Monga\Collection $collection */
         $collection = $database->collection('events');
-        /** @var Monga\Cursor $cursor */
-        $cursor = $collection->find(
-            function ($query) use ($calendar) {
-                $lastWeek = (new \DateTime())->sub(new \DateInterval('P1M'));
-                /** @var Monga\Query\Find $query */
-                $query->whereGte('start_time', new \MongoDate($lastWeek->getTimestamp()));
+        list($startDate, $endDate) = $this->getDates();
+        if ($startDate instanceof \DateTimeImmutable) {
+            /** @var Monga\Cursor $cursor */
+            $cursor = $collection->find(
+                function ($query) use ($calendar, $startDate, $endDate) {
+                    /** @var Monga\Query\Find $query */
+                    $query->whereGte('start_time', new \MongoDate($startDate->getTimestamp()));
+                    if ($endDate instanceof \DateTimeImmutable) {
+                        $query->whereLt('start_time', new \MongoDate($endDate->getTimestamp()));
+                    }
 
-                if ($calendar != 'all') {
-                    $query->where('type', $calendar);
+                    if ($calendar != 'all') {
+                        $query->where('type', $calendar);
+                    }
+
+                    $query->orderBy('start_time');
                 }
-            }
-        );
+            );
+        }
 
         $model = new CalendarModel($calendar);
         foreach($cursor->toArray() as $eventArray) {
@@ -92,7 +146,7 @@ class Calendar extends ProcessorA
             $ev->setDtStart($start);
             $ev->setDtEnd($end);
 
-            if (false) {
+            if ($oHttpRequest->hasGetVar('alt-desc')) {
                 $doc = new \DOMDocument('1.0', 'UTF-8');
 
                 $body = $doc->createElement('body');

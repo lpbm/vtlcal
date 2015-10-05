@@ -2,6 +2,7 @@
 
 namespace tlcal\presentation\views;
 
+use tlcal\domain\models\ical\Calendar;
 use vsc\presentation\views\CacheableViewA;
 use vsc\presentation\views\ExceptionView;
 
@@ -27,6 +28,11 @@ class ICalView extends CacheableViewA
      * @throws ExceptionView
      */
     public function getOutput() {
-        return implode("\r\n", $this->getModel()->build());
+        $model = $this->getModel();
+        if (Calendar::isValid($model)) {
+            return implode("\r\n", $model->build());
+        } else {
+            return $model->getMessage();
+        }
     }
 }
