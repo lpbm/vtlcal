@@ -30,7 +30,7 @@ class Calendar extends ProcessorA
         if ($var == 'dota') {
             return 'dot';
         }
-        if ($var == 'csgo' || $var == 'counter' || $var == 'counterstrike') {
+        if ($var == 'cs'  || $var == 'cs:go' || $var == 'csgo' || $var == 'counter' || $var == 'counterstrike') {
             return 'csg';
         }
         if ($var == 'league' || $var == 'lol') {
@@ -39,10 +39,10 @@ class Calendar extends ProcessorA
         if ($var == 'hearthstone') {
             return 'hrt';
         }
-        if ($var == 'starcraft') {
+        if ($var == 'starcraft' || $var == 'sc2') {
             return 'sc2';
         }
-        if ($var == 'broodwar') {
+        if ($var == 'broodwar' || $var == 'bw') {
             return 'brw';
         }
         if ($var == 'smash') {
