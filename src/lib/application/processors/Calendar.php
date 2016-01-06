@@ -99,15 +99,27 @@ class Calendar extends ProcessorA
         $collection = new MongoDB\Collection($connection, 'tlcalendar.events');
         list($startDate, $endDate) = $this->getDates();
         $query = [];
+
         if ($startDate instanceof \DateTimeImmutable) {
             $query['start_time'] = ['$gte' => new MongoDB\BSON\UTCDateTime($startDate->getTimestamp())];
         }
         if ($endDate instanceof \DateTimeImmutable) {
-            $query['start_time']['$lt'] = new MongoDB\BSON\UTCDateTime($endDate->getTimestamp());
+            $query = [
+                '$and' => [
+                        [
+                            'start_time' => ['$gte' => new MongoDB\BSON\UTCDateTime($startDate->getTimestamp())],
+                        ]/*,
+                        [
+                            'start_time' => ['$lte' => new MongoDB\BSON\UTCDateTime($endDate->getTimestamp())]
+                        ]*/
+                    ]
+            ];
+            unset($query['start_time']);
         }
         if ($calendar != 'all') {
             $query['type'] = $calendar;
         }
+
         $cursor = $collection->find($query, ['sort' => ['start_time' => 1]]);
 
         $model = new CalendarModel($calendar);
