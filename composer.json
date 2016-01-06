@@ -11,7 +11,8 @@
   ],
   "require": {
     "php": ">=5.5.0",
-    "league/monga": "dev-master",
+    "ext-mongodb": "~1.1",
+    "mongodb/mongodb": "dev-master",
     "eluceo/ical": "dev-master",
     "vsc/vsc": "dev-master"
   },

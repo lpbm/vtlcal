@@ -1,13 +1,13 @@
 <?php
 namespace tlcal\application\processors;
 
-use League\Monga;
 use tlcal\domain\LiquidAssets;
 use tlcal\domain\models\ical\Calendar as CalendarModel;
 use tlcal\domain\models\ical\Event;
 use vsc\application\processors\ProcessorA;
 use vsc\presentation\requests\HttpRequestA;
 use vsc\domain\models\ModelA;
+use MongoDB;
 
 class Calendar extends ProcessorA
 {
@@ -100,45 +100,37 @@ class Calendar extends ProcessorA
      */
     public function handleRequest(HttpRequestA $oHttpRequest)
     {
-        $connection = Monga::connection('mongodb://127.0.0.1');
-        $database = $connection->database('tlcalendar');
+        $connection = new MongoDB\Driver\Manager('mongodb://127.0.0.1');
+//        $database = $connection->database('tlcalendar');
 
         $calendar = $this->getTypeFromUrl($this->getVar('calendar'));
-        /** @var Monga\Collection $collection */
-        $collection = $database->collection('events');
+        $collection = new MongoDB\Collection($connection, 'tlcalendar.events');
         list($startDate, $endDate) = $this->getDates();
+        $query = [];
         if ($startDate instanceof \DateTimeImmutable) {
-            /** @var Monga\Cursor $cursor */
-            $cursor = $collection->find(
-                function ($query) use ($calendar, $startDate, $endDate) {
-                    /** @var Monga\Query\Find $query */
-                    $query->whereGte('start_time', new \MongoDate($startDate->getTimestamp()));
-                    if ($endDate instanceof \DateTimeImmutable) {
-                        $query->whereLt('start_time', new \MongoDate($endDate->getTimestamp()));
-                    }
-
-                    if ($calendar != 'all') {
-                        $query->where('type', $calendar);
-                    }
-
-                    $query->orderBy('start_time');
-                }
-            );
+            $query['start_time'] = ['$gte' => new MongoDB\BSON\UTCDateTime($startDate->getTimestamp())];
         }
+        if ($endDate instanceof \DateTimeImmutable) {
+            $query['start_time']['$lt'] = new MongoDB\BSON\UTCDateTime($endDate->getTimestamp());
+        }
+        if ($calendar != 'all') {
+            $query['type'] = $calendar;
+        }
+        $cursor = $collection->find($query, ['sort' => ['start_time' => 1]]);
 
         $model = new CalendarModel($calendar);
-        foreach($cursor->toArray() as $eventArray) {
+        foreach($cursor as $event) {
             $ev = new Event();
-            if ($eventArray['start_time']) {
-                $start = $eventArray['start_time']->toDateTime();
+            if ($event->start_time) {
+                $start = $event->start_time->toDateTime();
             }
-            if ($eventArray['end_time']) {
-                $end = $eventArray['end_time']->toDateTime();
+            if ($event->end_time) {
+                $end = $event->end_time->toDateTime();
             }
 
-            $content = $eventArray['content'];
-            if (isset($eventArray['links'])) {
-                foreach ($eventArray['links'] as $title => $url) {
+            $content = $event->content;
+            if (isset($event->links)) {
+                foreach ($event->links as $title => $url) {
                     $content .= "\n" . $title . ': ' . $url;
                 }
             }
@@ -159,13 +151,13 @@ class Calendar extends ProcessorA
                 $section->appendChild($span);
 
                 $icon = $doc->createElement('img');
-                $icon->setAttribute('src', LiquidAssets::getIconString($eventArray['type']));
+                $icon->setAttribute('src', LiquidAssets::getIconString($event->type));
                 $span->appendChild($icon);
 
                 $br = $doc->createElement('br');
                 $span->appendChild($br);
 
-                $localText = $doc->createTextNode($eventArray['category'] . ': ' . $eventArray['stage']);
+                $localText = $doc->createTextNode($event->category . ': ' . $event->stage);
                 $span->appendChild($localText);
 
                 $lines = explode("\n", $content);
@@ -185,15 +177,15 @@ class Calendar extends ProcessorA
             }
 
             if ($calendar == 'all') {
-                $ev->setSummary('[' . strtoupper($eventArray['type']) . '] ' . $eventArray['category'] . ': ' . $eventArray['stage']);
+                $ev->setSummary('[' . strtoupper($event->type) . '] ' . $event->category . ': ' . $event->stage);
             } else {
-                $ev->setSummary($eventArray['category'] . ': ' . $eventArray['stage']);
+                $ev->setSummary($event->category . ': ' . $event->stage);
             }
             $ev->setDescription($content);
-            if (isset($eventArray['canceled'])) {
-                $ev->setCancelled((bool)$eventArray['canceled']);
+            if (isset($event->canceled)) {
+                $ev->setCancelled((bool)$event->canceled);
             }
-            $ev->setCategories([LiquidAssets::getLabel($eventArray['type'])]);
+            $ev->setCategories([LiquidAssets::getLabel($event->type)]);
 
             $model->addEvent($ev);
         }
