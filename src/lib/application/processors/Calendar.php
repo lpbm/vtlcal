@@ -59,36 +59,29 @@ class Calendar extends ProcessorA
         $month = $this->getVar('month');
         $day = $this->getVar('day');
 
-        if (!($year || $month || $day)) {
-            return [
-                \DateTimeImmutable::createFromFormat(
-                    'Y-m-d',
-                    (new \DateTimeImmutable())->format('Y-m-01')
-                ),
-                null
-            ];
-        }
         if (is_null($day)) {
             $interval = 'P1M';
-            $dateString = '%s-%s-01 00:00:00';
-        } else {
-            $interval = 'P1D';
-            $dateString = '%s-%s-%s 00:00:00';
+            $day = '01';
         }
-
+        if (is_null($month)) {
+            $interval = 'P1Y';
+            $month = '01';
+        }
+        if (is_null($year)) {
+            $interval = 'P1Y';
+            $year = (new \DateTime('now'))->format('Y');
+        }
+        $dateString = '%s-%s-%s 00:00:00.00000';
+        $format = 'Y-m-d H:i:s.u';
         if (!is_numeric($month)) {
             if (strlen($month) == 3) {
-                $format = 'Y-M-d G:i:s';
+                $format = 'Y-M-d 00:00:00.00000';
             } else {
-                $format = 'Y-F-d G:i:s';
+                $format = 'Y-F-d 00:00:00.00000';
             }
-            $date = sprintf($dateString, $year, ucfirst($month), $day);
 
-        } else {
-            $format = 'Y-m-d G:i:s';
-            $date = sprintf($dateString, $year, $month, $day);
         }
-
+        $date = sprintf($dateString, $year, ucfirst($month), $day);
         $start = \DateTimeImmutable::createFromFormat($format, $date);
         return [$start, $start->add(new \DateInterval($interval))];
     }
@@ -101,7 +94,6 @@ class Calendar extends ProcessorA
     public function handleRequest(HttpRequestA $oHttpRequest)
     {
         $connection = new MongoDB\Driver\Manager('mongodb://127.0.0.1');
-//        $database = $connection->database('tlcalendar');
 
         $calendar = $this->getTypeFromUrl($this->getVar('calendar'));
         $collection = new MongoDB\Collection($connection, 'tlcalendar.events');

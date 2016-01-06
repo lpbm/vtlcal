@@ -15,7 +15,7 @@ class Calendar extends ModelA
     protected $ical;
 
     public function __construct($type) {
-        $this->ical = new iCalCalendar('TL-CAL/v0.0.1');
+        $this->ical = new iCalCalendar('TL-CAL/v0.0.2');
         $this->ical->setTimezone(new Timezone('UTC'));
         $this->ical->setPublishedTTL('P1H');
         $this->ical->setName(LiquidAssets::getLabel($type));
