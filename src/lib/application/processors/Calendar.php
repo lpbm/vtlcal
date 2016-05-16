@@ -96,7 +96,7 @@ class Calendar extends ProcessorA
         $connection = new MongoDB\Driver\Manager('mongodb://127.0.0.1');
 
         $calendar = $this->getTypeFromUrl($this->getVar('calendar'));
-        $collection = new MongoDB\Collection($connection, 'tlcalendar.events');
+        $collection = new MongoDB\Collection($connection, 'tlcalendar', 'events');
         list($startDate, $endDate) = $this->getDates();
         $query = [];
 
