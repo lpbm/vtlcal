@@ -186,11 +186,11 @@ class Calendar extends ProcessorA
             }
 
             $content = $event->content;
-            if (isset($event->links)) {
-                foreach ($event->links as $title => $url) {
-                    $content .= "\n" . $title . ': ' . $url;
-                }
-            }
+//            if (isset($event->links)) {
+//                foreach ($event->links as $title => $url) {
+//                    $content .= "\n" . $title . ': ' . $url;
+//                }
+//            }
 
             $ev->setDtStart($start);
             $ev->setDtEnd($end);
