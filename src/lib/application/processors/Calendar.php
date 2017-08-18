@@ -177,7 +177,7 @@ class Calendar extends ProcessorA
 
         $model = new CalendarModel($calendar);
         foreach($cursor as $event) {
-            $ev = new Event();
+            $ev = new Event(md5($event->type . ':' . $event->tl_id));
             if ($event->start_time) {
                 $start = $event->start_time->toDateTime();
             }
