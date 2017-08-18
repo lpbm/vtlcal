@@ -48,6 +48,57 @@ class Calendar extends ProcessorA
         if ($var == 'smash') {
             return 'sms';
         }
+        if ($var == "pfw") {
+            return 'pfw';
+        }
+        if ($var == "qlv") {
+            return 'qlv';
+        }
+        if ($var == "qiv") {
+            return 'qiv';
+        }
+        if ($var == "qiii") {
+            return 'qiii';
+        }
+        if ($var == "qii") {
+            return 'qii';
+        }
+        if ($var == "qw") {
+            return 'qw';
+        }
+        if ($var == "dbt") {
+            return 'dbt';
+        }
+        if ($var == "doom") {
+            return 'doom';
+        }
+        if ($var == "rfl") {
+            return 'rfl';
+        }
+        if ($var == "ovw") {
+            return 'ovw';
+        }
+        if ($var == "gg") {
+            return 'gg';
+        }
+        if ($var == "ut") {
+            return 'ut';
+        }
+        if ($var == "wsw") {
+            return 'wsw';
+        }
+        if ($var == "dbmb") {
+            return 'dbmb';
+        }
+        if ($var == "xnt") {
+            return 'xnt';
+        }
+        if ($var == "qch") {
+            return 'qch';
+        }
+        if ($var == "cpma") {
+            return 'cpma';
+        }
         return 'all';
     }
 
