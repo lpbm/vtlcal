@@ -21,6 +21,7 @@ class MongoCalendar
      * @param array $calendars
      * @param array $dates
      * @param bool $html
+     * @return CalendarModel
      */
     public function loadCalendars(array $calendars, array $dates = [], bool $html = false)
     {
@@ -61,6 +62,9 @@ class MongoCalendar
             }
             if ($event->end_time) {
                 $end = $event->end_time->toDateTime();
+            }
+            if (isset($event->last_modified_time)) {
+                $ev->setDtStamp($event->last_modified_time->toDateTime());
             }
 
             $content = $event->content;
