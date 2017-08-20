@@ -103,14 +103,16 @@ class MongoCalendar
 
                 $lines = explode("\n", $content);
                 for ($i = count($lines); $i > 0; $i--) {
+                    if (!array_key_exists($i, $lines)) { continue; }
+
                     $line = $lines[$i];
-                    if (!empty($line)) {
-                        $text = $doc->createTextNode($line);
-                        $section->appendChild($text);
-                        if ($i > 1) {
-                            $br = $doc->createElement('br');
-                            $section->appendChild($br);
-                        }
+                    if (empty($line)) { continue; }
+                    
+                    $text = $doc->createTextNode($line);
+                    $section->appendChild($text);
+                    if ($i > 1) {
+                        $br = $doc->createElement('br');
+                        $section->appendChild($br);
                     }
                 }
                 $htmlDescription = $doc->saveHTML($section);
