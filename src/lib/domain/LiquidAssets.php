@@ -36,7 +36,10 @@ START;
 
     const ALL_ID = 'all';
     const UNK_ID =  'unk';
+    const PFW_ID =  'pfw';
+    const TL_ID =  'tl';
 
+    // tl
     const SC2_ID = 'sc2';
     const BRW_ID =  'brw';
     const SMA_ID =  'sma';
@@ -44,7 +47,8 @@ START;
     const DOT_ID =  'dot';
     const LOL_ID =  'lol';
     const CSG_ID =  'csg';
-    const PFW_ID =  'pfw';
+
+    // +>>
     const QLV_ID =  'qlv';
     const QIV_ID =  'qiv';
     const QIII_ID ='qiii';
@@ -70,7 +74,7 @@ START;
         self::DOT_ID => 'Dota 2',
         self::LOL_ID => 'League of Legends',
         self::CSG_ID => 'Counter Strike: Global Offensive',
-        self::PFW_ID => '',
+
         self::QLV_ID => 'Quake Live',
         self::QIV_ID => 'Quake 4',
         self::QIII_ID => 'Quake III',
@@ -87,10 +91,19 @@ START;
         self::XNT_ID => 'Xonotical',
         self::QCH_ID => 'Quake: Champions',
         self::CPMA_ID => '',
+
         self::ALL_ID => 'All',
+        self::PFW_ID => 'Plus Forward',
+        self::TL_ID => 'Team Liquid',
         self::UNK_ID => 'Unknown',
     ];
 
+    private static $invalidTypes = [
+        self::ALL_ID,
+        self::PFW_ID,
+        self::TL_ID,
+        self::UNK_ID,
+        ];
     private static $labels = [
         self::SC2_ID => 'SC2',
         self::BRW_ID => 'SCBW',
@@ -100,7 +113,7 @@ START;
         self::LOL_ID => 'LoL',
         self::CSG_ID => 'CSGO',
         self::ALL_ID => 'TL',
-        self::PFW_ID => '+⏩',
+
         self::QLV_ID => 'QLive',
         self::QIV_ID => 'Q4',
         self::QIII_ID => 'QIII',
@@ -117,7 +130,10 @@ START;
         self::XNT_ID => 'Xono',
         self::QCH_ID => 'QChamp',
         self::CPMA_ID => '',
+
         self::ALL_ID => 'All',
+        self::PFW_ID => '+⏩',
+        self::TL_ID => 'Liquid',
         self::UNK_ID => 'Unk',
     ];
 
@@ -127,7 +143,7 @@ START;
      */
     public static function validType($type)
     {
-        return array_key_exists($type, self::$labels);
+        return !in_array($type, self::$invalidTypes) && array_key_exists($type, self::$labels);
     }
 
     /**
