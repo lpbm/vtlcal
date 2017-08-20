@@ -34,74 +34,127 @@ START;
 iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAr0lEQVR4AYXRs0IEcACA8V9cs223\n9hiHualHCGvmnhtr65myMWfzfPd9fxui0WLKpEFVUhD0/u2zbRWiGFABQt7/PdMHUOdWMwh7j/JU\nGbDrXcv/gGi3oN7r/4Cgd9E+Kmbou9gcNSDaMNPfhaYUA0ZkHpAtX74s/JajzJVNjhkLikG3RUu/\nLlowIQt2Ut5iBahykXTAviKAfuUJD3WgXTTRf+HeqiJJaDBmVFAhAB/6CHB/GRUzdAAAAABJRU5E\nrkJggg==
 START;
 
+    const ALL_ID = 'all';
+    const UNK_ID =  'unk';
 
-
+    const SC2_ID = 'sc2';
+    const BRW_ID =  'brw';
+    const SMA_ID =  'sma';
+    const HRT_ID =  'hrt';
+    const DOT_ID =  'dot';
+    const LOL_ID =  'lol';
+    const CSG_ID =  'csg';
+    const PFW_ID =  'pfw';
+    const QLV_ID =  'qlv';
+    const QIV_ID =  'qiv';
+    const QIII_ID ='qiii';
+    const QII_ID =  'qii';
+    const QW_ID =   'qw';
+    const DBT_ID =  'dbt';
+    const DOOM_ID = 'doom';
+    const RFL_ID =  'rfl';
+    const OVW_ID =  'ovw';
+    const GG_ID =   'gg';
+    const UT_ID =   'ut';
+    const WSW_ID =  'wsw';
+    const DBMB_ID = 'dbmb';
+    const XNT_ID =  'xnt';
+    const QCH_ID =  'qch';
+    const CPMA_ID = 'cpma';
 
     private static $fullLabels = [
-        'sc2' => 'Star Craft II',
-        'brw' => 'Star Craft: Broodwar',
-        'sma' => 'Super Smash Brothers',
-        'hrt' => 'Hearthstone',
-        'dot' => 'Dota 2',
-        'lol' => 'League of Legends',
-        'csg' => 'Counter Strike: Global Offensive',
-        'pfw' => '',
-        'qlv' => 'Quake Live',
-        'qiv' => 'Quake 4',
-        'qiii' => 'Quake III',
-        'qii' => 'Quake II',
-        'qw' => 'Quake Wars',
-        'dbt' => 'Diabotical',
-        'doom' => 'DOOM',
-        'rfl' => '',
-        'ovw' => 'Overwatch',
-        'gg' => '',
-        'ut' => 'Unreal Tournament',
-        'wsw' => 'Warsow',
-        'dbmb' => '',
-        'xnt' => 'Xonotical',
-        'qch' => 'Quake: Champions',
-        'cpma' => '',
-        'unk' => 'Unknown',
-    ];
-    private static $labels = [
-        'sc2' => 'SC2',
-        'brw' => 'SCBW',
-        'sma' => 'SmashBros',
-        'hrt' => 'Hearthstone',
-        'dot' => 'Dota2',
-        'lol' => 'LoL',
-        'csg' => 'CSGO',
-        'all' => 'TL',
-        'pfw' => '',
-        'qlv' => 'QLive',
-        'qiv' => 'Q4',
-        'qiii' => 'QIII',
-        'qii' => 'QII',
-        'qw' => 'QWars',
-        'dbt' => 'Dbtical',
-        'doom' => 'DOOM',
-        'rfl' => '',
-        'ovw' => 'Owatch',
-        'gg' => '',
-        'ut' => 'UT',
-        'wsw' => 'Wsow',
-        'dbmb' => '',
-        'xnt' => 'Xono',
-        'qch' => 'QChamp',
-        'cpma' => '',
-        'unk' => 'Unk',
+        self::SC2_ID => 'Star Craft II',
+        self::BRW_ID => 'Star Craft: Broodwar',
+        self::SMA_ID => 'Super Smash Brothers',
+        self::HRT_ID => 'Hearthstone',
+        self::DOT_ID => 'Dota 2',
+        self::LOL_ID => 'League of Legends',
+        self::CSG_ID => 'Counter Strike: Global Offensive',
+        self::PFW_ID => '',
+        self::QLV_ID => 'Quake Live',
+        self::QIV_ID => 'Quake 4',
+        self::QIII_ID => 'Quake III',
+        self::QII_ID => 'Quake II',
+        self::QW_ID => 'Quake Wars',
+        self::DBT_ID => 'Diabotical',
+        self::DOOM_ID => 'DOOM',
+        self::RFL_ID => '',
+        self::OVW_ID => 'Overwatch',
+        self::GG_ID => '',
+        self::UT_ID => 'Unreal Tournament',
+        self::WSW_ID => 'Warsow',
+        self::DBMB_ID => '',
+        self::XNT_ID => 'Xonotical',
+        self::QCH_ID => 'Quake: Champions',
+        self::CPMA_ID => '',
+        self::ALL_ID => 'All',
+        self::UNK_ID => 'Unknown',
     ];
 
-    public static function getLabel ($type = 'unk')
+    private static $labels = [
+        self::SC2_ID => 'SC2',
+        self::BRW_ID => 'SCBW',
+        self::SMA_ID => 'SmashBros',
+        self::HRT_ID => 'Hearthstone',
+        self::DOT_ID => 'Dota2',
+        self::LOL_ID => 'LoL',
+        self::CSG_ID => 'CSGO',
+        self::ALL_ID => 'TL',
+        self::PFW_ID => '+⏩',
+        self::QLV_ID => 'QLive',
+        self::QIV_ID => 'Q4',
+        self::QIII_ID => 'QIII',
+        self::QII_ID => 'QII',
+        self::QW_ID => 'QWars',
+        self::DBT_ID => 'Dbtical',
+        self::DOOM_ID => 'DOOM',
+        self::RFL_ID => '',
+        self::OVW_ID => 'Owatch',
+        self::GG_ID => '',
+        self::UT_ID => 'UT',
+        self::WSW_ID => 'Wsow',
+        self::DBMB_ID => '',
+        self::XNT_ID => 'Xono',
+        self::QCH_ID => 'QChamp',
+        self::CPMA_ID => '',
+        self::ALL_ID => 'All',
+        self::UNK_ID => 'Unk',
+    ];
+
+    /**
+     * @param string $type
+     * @return bool
+     */
+    public static function validType($type)
+    {
+        return array_key_exists($type, self::$labels);
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    public static function getLabel ($type = self::UNK_ID)
     {
         if (!array_key_exists($type, self::$labels)) {
-            $type = 'unk';
+            $type = self::UNK_ID;
         }
         return self::$labels[$type];
     }
 
-    public static function getIconString ($type = 'unk')
+    /**
+     * @param string $type
+     * @return string
+     */
+    public static function getFullLabel ($type = self::UNK_ID)
+    {
+        if (!array_key_exists($type, self::$fullLabels)) {
+            $type = self::UNK_ID;
+        }
+        return self::$fullLabels[$type];
+    }
+
+    public static function getIconString ($type = self::UNK_ID)
     {
         switch ($type) {
             case 'sc2':
@@ -126,7 +179,7 @@ START;
         return 'data:image/png;base64,' . $content;
     }
 
-    public static function getIconNode ($type = 'unk') {
+    public static function getIconNode ($type = self::UNK_ID) {
         $icon = new \DOMNode('img');
         $icon->appendChild(new \DOMAttr('src', self::getIconString($type)));
         return $icon;
