@@ -1,13 +1,11 @@
 <?php
 namespace tlcal\application\processors;
 
+use tlcal\domain\access\mongo\MongoCalendar;
 use tlcal\domain\LiquidAssets;
-use tlcal\domain\models\ical\Calendar as CalendarModel;
-use tlcal\domain\models\ical\Event;
 use vsc\application\processors\ProcessorA;
 use vsc\presentation\requests\HttpRequestA;
 use vsc\domain\models\ModelA;
-use MongoDB;
 
 class Calendar extends ProcessorA
 {
@@ -27,79 +25,84 @@ class Calendar extends ProcessorA
 
     protected function getTypeFromUrl($var) {
         $var = strtolower($var);
+        $calendars = [];
+
         if ($var == 'dota') {
-            return 'dot';
+            $calendars[] = 'dot';
         }
         if ($var == 'cs'  || $var == 'cs:go' || $var == 'csgo' || $var == 'counter' || $var == 'counterstrike') {
-            return 'csg';
+            $calendars[] = 'csg';
         }
         if ($var == 'league' || $var == 'lol') {
-            return 'lol';
+            $calendars[] = 'lol';
         }
         if ($var == 'hearthstone') {
-            return 'hrt';
+            $calendars[] = 'hrt';
         }
         if ($var == 'starcraft' || $var == 'sc2') {
-            return 'sc2';
+            $calendars[] = 'sc2';
         }
         if ($var == 'broodwar' || $var == 'bw') {
-            return 'brw';
+            $calendars[] = 'brw';
         }
         if ($var == 'smash') {
-            return 'sms';
+            $calendars[] = 'sms';
         }
         if ($var == "pfw") {
-            return 'pfw';
+            $calendars[] = 'pfw';
         }
         if ($var == "qlv") {
-            return 'qlv';
+            $calendars[] = 'qlv';
         }
         if ($var == "qiv") {
-            return 'qiv';
+            $calendars[] = 'qiv';
         }
         if ($var == "qiii") {
-            return 'qiii';
+            $calendars[] = 'qiii';
         }
         if ($var == "qii") {
-            return 'qii';
+            $calendars[] = 'qii';
         }
         if ($var == "qw") {
-            return 'qw';
+            $calendars[] = 'qw';
         }
         if ($var == "dbt") {
-            return 'dbt';
+            $calendars[] = 'dbt';
         }
         if ($var == "doom") {
-            return 'doom';
+            $calendars[] = 'doom';
         }
         if ($var == "rfl") {
-            return 'rfl';
+            $calendars[] = 'rfl';
         }
         if ($var == "ovw") {
-            return 'ovw';
+            $calendars[] = 'ovw';
         }
         if ($var == "gg") {
-            return 'gg';
+            $calendars[] = 'gg';
         }
         if ($var == "ut") {
-            return 'ut';
+            $calendars[] = 'ut';
         }
         if ($var == "wsw") {
-            return 'wsw';
+            $calendars[] = 'wsw';
         }
         if ($var == "dbmb") {
-            return 'dbmb';
+            $calendars[] = 'dbmb';
         }
         if ($var == "xnt") {
-            return 'xnt';
+            $calendars[] = 'xnt';
         }
         if ($var == "qch") {
-            return 'qch';
+            $calendars[] = 'qch';
         }
         if ($var == "cpma") {
-            return 'cpma';
+            $calendars[] = 'cpma';
         }
-        return 'all';
+        if (count($calendars) == 0) {
+            $calendars[] = 'all';
+        }
+        return $calendars;
     }
 
     /**
@@ -144,108 +147,9 @@ class Calendar extends ProcessorA
      */
     public function handleRequest(HttpRequestA $oHttpRequest)
     {
-        $connection = new MongoDB\Driver\Manager('mongodb://127.0.0.1');
-
-        $calendar = $this->getTypeFromUrl($this->getVar('calendar'));
-        $collection = new MongoDB\Collection($connection, 'tlcalendar', 'events');
-        list($startDate, $endDate) = $this->getDates();
-        $query = [];
-
-        if ($startDate instanceof \DateTimeImmutable) {
-            $query['end_time'] = ['$gte' => new MongoDB\BSON\UTCDateTime($startDate->getTimestamp())];
-        }
-        if ($endDate instanceof \DateTimeImmutable) {
-            $query['start_time'] = ['$lt' => new MongoDB\BSON\UTCDateTime($endDate->getTimestamp())];
-            $query = [
-                '$and' => [
-                        [
-                            'end_time' => ['$gte' => new MongoDB\BSON\UTCDateTime($startDate->getTimestamp())],
-                        ],
-                        //[
-                        //    'start_time' => ['$lt' => new MongoDB\BSON\UTCDateTime($endDate->getTimestamp())]
-                        //]
-                    ]
-            ];
-            unset($query['end_time']);
-        }
-        if ($calendar != 'all') {
-            $query['$and'][] = ['type' => $calendar];
-        }
-
-        //var_dump(json_encode($query));die;
-        $cursor = $collection->find($query, ['sort' => ['start_time' => -1]]);
-
-        $model = new CalendarModel($calendar);
-        foreach($cursor as $event) {
-            $ev = new Event(md5($event->type . ':' . $event->tl_id));
-            if ($event->start_time) {
-                $start = $event->start_time->toDateTime();
-            }
-            if ($event->end_time) {
-                $end = $event->end_time->toDateTime();
-            }
-
-            $content = $event->content;
-//            if (isset($event->links)) {
-//                foreach ($event->links as $title => $url) {
-//                    $content .= "\n" . $title . ': ' . $url;
-//                }
-//            }
-
-            $ev->setDtStart($start);
-            $ev->setDtEnd($end);
-
-            if ($oHttpRequest->hasGetVar('alt-desc')) {
-                $doc = new \DOMDocument('1.0', 'UTF-8');
-
-                $body = $doc->createElement('body');
-                $doc->appendChild($body);
-
-                $section = $doc->createElement('div');
-                $body->appendChild($section);
-
-                $span = $doc->createElement('span');
-                $section->appendChild($span);
-
-                $icon = $doc->createElement('img');
-                $icon->setAttribute('src', LiquidAssets::getIconString($event->type));
-                $span->appendChild($icon);
-
-                $br = $doc->createElement('br');
-                $span->appendChild($br);
-
-                $localText = $doc->createTextNode($event->category . ': ' . $event->stage);
-                $span->appendChild($localText);
-
-                $lines = explode("\n", $content);
-                for ($i = count($lines); $i > 0; $i--) {
-                    $line = $lines[$i];
-                    if (!empty($line)) {
-                        $text = $doc->createTextNode($line);
-                        $section->appendChild($text);
-                        if ($i > 1) {
-                            $br = $doc->createElement('br');
-                            $section->appendChild($br);
-                        }
-                    }
-                }
-                $html = $doc->saveHTML($section);
-                $ev->setAltDescription($html, 'text/html');
-            }
-
-            if ($calendar == 'all') {
-                $ev->setSummary('[' . strtoupper($event->type) . '] ' . $event->category . ': ' . $event->stage);
-            } else {
-                $ev->setSummary($event->category . ': ' . $event->stage);
-            }
-            $ev->setDescription($content);
-            if (isset($event->canceled)) {
-                $ev->setCancelled((bool)$event->canceled);
-            }
-            $ev->setCategories([LiquidAssets::getLabel($event->type)]);
-
-            $model->addEvent($ev);
-        }
+        $calendars = $this->getTypeFromUrl($this->getVar('calendar'));
+        $model = (new MongoCalendar())
+            ->loadCalendars($calendars, $this->getDates(), $oHttpRequest->hasGetVar('alt-desc'));
 
         return $model;
     }
