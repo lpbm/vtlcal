@@ -122,6 +122,6 @@ class MongoCalendar
             $model->addEvent($ev);
         }
 
-
+        return $model;
     }
 }
