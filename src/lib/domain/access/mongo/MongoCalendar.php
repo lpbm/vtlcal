@@ -30,10 +30,10 @@ class MongoCalendar
         $query = [];
 
         if ($startDate instanceof \DateTimeImmutable) {
-            $query['$and'][] = ['end_time' => ['$gte' => new MongoDateTime($startDate->getTimestamp())]];
+            $query['$and'][] = ['end_time' => ['$gte' => new MongoDateTime($startDate->getTimestamp() * 1000)]];
         }
         if ($endDate instanceof \DateTimeImmutable) {
-            $query['$and'][] = ['start_time' => ['$lt' => new MongoDateTime($endDate->getTimestamp())]];
+            $query['$and'][] = ['start_time' => ['$lt' => new MongoDateTime($endDate->getTimestamp() * 1000)]];
         }
         if (count($calendars) == 1) {
             if ($calendars[0] != 'all') {
