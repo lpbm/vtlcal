@@ -10,6 +10,7 @@ use vsc\domain\models\ModelA;
 class Calendar extends ProcessorA
 {
     protected $aLocalVars = [
+        'site' => 'teamliquid',
         'calendar' => 'sc2',
         'year' => null,
         'month' => null,
