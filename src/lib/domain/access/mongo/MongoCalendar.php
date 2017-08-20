@@ -65,6 +65,8 @@ class MongoCalendar
             }
             if (isset($event->last_modified_time)) {
                 $ev->setDtStamp($event->last_modified_time->toDateTime());
+            } else {
+                $ev->setDtStamp($event->end_time->toDateTime());
             }
 
             $content = $event->content;
