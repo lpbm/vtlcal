@@ -30,25 +30,18 @@ class MongoCalendar
         $query = [];
 
         if ($startDate instanceof \DateTimeImmutable) {
-            $query['end_time'] = ['$gte' => new MongoDateTime($startDate->getTimestamp())];
+            $query['$and'][] = ['end_time' => ['$gte' => new MongoDateTime($startDate->getTimestamp())]];
         }
         if ($endDate instanceof \DateTimeImmutable) {
-            $query['start_time'] = ['$lt' => new MongoDateTime($endDate->getTimestamp())];
-            $query = [
-                '$and' => [
-                    [
-                        'end_time' => ['$gte' => new MongoDateTime($startDate->getTimestamp())],
-                    ],
-                    //[
-                    //    'start_time' => ['$lt' => new MongoDateTime($endDate->getTimestamp())]
-                    //]
-                ]
-            ];
-            unset($query['end_time']);
+            $query['$and'][] = ['start_time' => ['$lt' => new MongoDateTime($endDate->getTimestamp())]];
         }
         if (count($calendars) == 1) {
             if ($calendars[0] != 'all') {
                 $query['$and'][] = ['type' => $calendars[0]];
+            }
+        } else {
+            foreach ($calendars as $calendar) {
+                $query['$or'][] = ['type' => $calendar];
             }
         }
 
@@ -107,7 +100,7 @@ class MongoCalendar
 
                     $line = $lines[$i];
                     if (empty($line)) { continue; }
-                    
+
                     $text = $doc->createTextNode($line);
                     $section->appendChild($text);
                     if ($i > 1) {
