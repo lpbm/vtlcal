@@ -107,11 +107,21 @@ class MongoCalendar
                         }
                     }
                 }
-                $html = $doc->saveHTML($section);
-                $ev->setAltDescription($html, 'text/html');
+                $htmlDescription = $doc->saveHTML($section);
+                $ev->setAltDescription($htmlDescription, 'text/html');
             }
 
-            $ev->setSummary('[' . strtoupper($event->type) . '] ' . $event->category . ': ' . $event->stage);
+            $summary = '[' . strtoupper($event->type) . '] ' . $event->category;
+            if (!empty($event->stage)) {
+                $summary .= ': ' . $event->stage;
+            }
+            if (!empty($content)) {
+                $lines = explode("\n", $content);
+                if (count($lines) == 1) {
+                    $summary .= ': ' . $lines[0];
+                }
+            }
+            $ev->setSummary($summary);
 
             $ev->setDescription($content);
             if (isset($event->canceled)) {
