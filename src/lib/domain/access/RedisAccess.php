@@ -1,11 +1,11 @@
 <?php
 namespace tlcal\domain\access;
-use Predis;
+use \Predis;
 
 class RedisAccess
 {
     /**
-     * @var Predis\Client
+     * @var \Predis\Client
      */
     private $connection;
 
@@ -24,7 +24,7 @@ class RedisAccess
 
     public function has($key)
     {
-        return !is_null($this->connection) && !is_null($this->connection->get($key));
+        return (!is_null($this->connection) && !is_null($this->connection->get($key)));
     }
 
     public function set($key, $value, $ttl = null)

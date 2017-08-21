@@ -6,6 +6,7 @@ use tlcal\domain\access\RedisAccess;
 use vsc\application\controllers\CacheableControllerA;
 use vsc\presentation\requests\HttpRequestA;
 use vsc\presentation\responses\HttpResponseA;
+use vsc\presentation\responses\HttpResponse;
 
 abstract class RedisCachedController extends CacheableControllerA
 {
@@ -35,7 +36,8 @@ abstract class RedisCachedController extends CacheableControllerA
      */
     protected function get($key, $default = null)
     {
-        $oResponse = $this->oRedisAccess->get($key);
+        /** @var HttpResponse $oResponse */
+        $oResponse = unserialize($this->oRedisAccess->get($key));
         if (!is_null($oResponse)) {
             return $oResponse;
         }
@@ -48,7 +50,7 @@ abstract class RedisCachedController extends CacheableControllerA
      */
     protected function has($key)
     {
-        $this->oRedisAccess->has($key);
+        return $this->oRedisAccess->has($key);
     }
 
     /**
@@ -58,7 +60,7 @@ abstract class RedisCachedController extends CacheableControllerA
      */
     protected function set($key, HttpResponseA $value)
     {
-        $this->oRedisAccess->set($key, $value);
+        $this->oRedisAccess->set($key, serialize($value));
     }
 
     /**
@@ -68,17 +70,14 @@ abstract class RedisCachedController extends CacheableControllerA
      */
     public function getResponse(HttpRequestA $oRequest, $oProcessor = null) {
         $key = $this->generateKey($oRequest);
-
-        if ($this->has($key)) {
-            return $this->get($key);
+        $oResponse = $this->get($key);
+        if (!HttpResponse::isValid($oResponse)) {
+            $oResponse = parent::getResponse($oRequest, $oProcessor);
+            if (!($oResponse->isRedirect() || $oResponse->isError())) {
+                $this->addCacheHeaders($oRequest, $this->getView()->getModel(), $oResponse);
+            }
+            $this->set($key, $oResponse);
         }
-        $oResponse = parent::getResponse($oRequest, $oProcessor);
-
-        if (!($oResponse->isRedirect() || $oResponse->isError())) {
-            $this->addCacheHeaders($oRequest, $this->getView()->getModel(), $oResponse);
-        }
-        $this->set($key, $oResponse);
-
         return $oResponse;
     }
 }
