@@ -26,6 +26,6 @@ class PlainTextController extends ICalController
      * @return \vsc\presentation\responses\HttpResponseA
      */
     public function getResponse(HttpRequestA $oRequest, $oProcessor = null) {
-        return CacheableControllerA::getResponse($oRequest, $oProcessor);
+        return RedisCachedController::getResponse($oRequest, $oProcessor);
     }
 }

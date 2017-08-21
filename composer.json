@@ -14,6 +14,7 @@
     "ext-mongodb": "~1.1",
     "mongodb/mongodb": "dev-master",
     "eluceo/ical": "dev-master",
+    "predis/predis": "dev-master",
     "vsc/vsc": "dev-master"
   },
   "repositories" : [

@@ -9,9 +9,8 @@ use vsc\presentation\requests\HttpRequestA;
 use vsc\presentation\responses\HttpResponseA;
 use vsc\presentation\views\ViewA;
 
-class ICalController extends CacheableControllerA
+class ICalController extends RedisCachedController
 {
-
     /**
      * @returns ViewA
      */
