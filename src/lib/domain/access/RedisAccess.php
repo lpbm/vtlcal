@@ -12,6 +12,11 @@ class RedisAccess
     public function __construct()
     {
         $this->connection = new Predis\Client('tcp://127.0.0.1:6379', ['exceptions' => false]);
+        try {
+            $this->connection->info();
+        } catch (Predis\PredisException $e) {
+            $this->connection = null;
+        }
     }
 
     public function get($key)
