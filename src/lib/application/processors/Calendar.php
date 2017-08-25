@@ -1,7 +1,7 @@
 <?php
 namespace tlcal\application\processors;
 
-use tlcal\domain\access\mongo\MongoCalendar;
+use tlcal\domain\access\MongoCalendar;
 use tlcal\domain\LiquidAssets;
 use vsc\application\processors\ProcessorA;
 use vsc\presentation\requests\HttpRequestA;

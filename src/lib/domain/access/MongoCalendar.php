@@ -1,5 +1,5 @@
 <?php
-namespace tlcal\domain\access\mongo;
+namespace tlcal\domain\access;
 
 use tlcal\domain\LiquidAssets;
 use tlcal\domain\models\ical\Calendar as CalendarModel;
@@ -25,7 +25,7 @@ class MongoCalendar
      */
     public function loadCalendars(array $calendars, array $dates = [], bool $html = false)
     {
-        $collection = new MongoCollection($this->connection, 'tlcalendar', 'events');
+        $collection = new MongoCollection($this->connection, 'calendar', 'events');
         list($startDate, $endDate) = $dates;
         $query = [];
 
