@@ -35,35 +35,35 @@ iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAr0lEQVR4AYXRs0IEcACA8V9cs223\n9h
 START;
 
     const ALL_ID = 'all';
-    const UNK_ID =  'unk';
-    const PFW_ID =  'pfw';
+    const UNK_ID = 'unk';
+    const PFW_ID = 'pfw';
     const TL_ID =  'tl';
 
     // tl
     const SC2_ID = 'sc2';
-    const BRW_ID =  'brw';
-    const SMA_ID =  'sma';
-    const HRT_ID =  'hrt';
-    const DOT_ID =  'dot';
-    const LOL_ID =  'lol';
-    const CSG_ID =  'csg';
+    const BRW_ID = 'bw';
+    const SMA_ID = 'smash';
+    const HRT_ID = 'hs';
+    const DOT_ID = 'dota';
+    const LOL_ID = 'lol';
+    const CSG_ID = 'csgo';
 
     // +>>
-    const QLV_ID =  'qlv';
-    const QIV_ID =  'qiv';
+    const QLV_ID = 'qlive';
+    const QIV_ID = 'qiv';
     const QIII_ID ='qiii';
-    const QII_ID =  'qii';
-    const QW_ID =   'qw';
-    const DBT_ID =  'dbt';
+    const QII_ID = 'qii';
+    const QW_ID = 'qw';
+    const DBT_ID = 'dibt';
     const DOOM_ID = 'doom';
-    const RFL_ID =  'rfl';
-    const OVW_ID =  'ovw';
-    const GG_ID =   'gg';
-    const UT_ID =   'ut';
-    const WSW_ID =  'wsw';
+    const RFL_ID = 'rfl';
+    const OVW_ID = 'ovw';
+    const GG_ID = 'gg';
+    const UT_ID = 'ut';
+    const WSW_ID = 'wsw';
     const DBMB_ID = 'dbmb';
-    const XNT_ID =  'xnt';
-    const QCH_ID =  'qch';
+    const XNT_ID = 'xnt';
+    const QCH_ID = 'qch';
     const CPMA_ID = 'cpma';
 
     private static $fullLabels = [
